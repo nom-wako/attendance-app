@@ -1,0 +1,107 @@
+body {
+  min-width: 1400px;
+}
+
+img {
+  width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+button {
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  padding: 0;
+}
+
+input {
+  border: 1px solid #000;
+  border-radius: 5px;
+  padding: 5px 10px;
+  width: 100%;
+  height: 45px;
+}
+
+.header {
+  background-color: #000;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 16px;
+  padding: 0 30px;
+  position: sticky;
+  top: 0;
+  height: 60px;
+  z-index: 3;
+}
+
+.header__logo {
+  vertical-align: middle;
+}
+
+.header__logo-link {
+  display: block;
+  line-height: 0;
+  width: 250px;
+}
+
+.section {
+  margin-inline: auto;
+  padding-block: 60px;
+  width: 900px;
+}
+
+.page__title {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 60px;
+  text-align: center;
+}
+
+.form {
+  margin-inline: auto;
+  width: 680px;
+}
+
+.form__group {
+  margin-bottom: 30px;
+}
+
+.form__label {
+  font-size: 24px;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.form__button {
+  background-color: #000;
+  border-radius: 5px;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+  font-weight: 700;
+  margin-top: 60px;
+  transition: .3s ease;
+  width: 100%;
+  height: 60px;
+}
+.form__button:hover {
+  background-color: #444;
+}
+
+.form__error {
+  color: #ff333f;
+  margin-top: 5px;
+}

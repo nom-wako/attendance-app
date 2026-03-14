@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,5 +15,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    if (Auth::check()) {
+        return Auth::user()->role === 1 ? redirect('/admin/attendance/list') : redirect('/attendance');
+    }
+    return redirect('/login');
+});
+
+Route::get('/admin/login', function () {
+    return view('admin.login');
 });
