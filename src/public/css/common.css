@@ -1,4 +1,5 @@
 body {
+  background-color: #F0EFF2;
   min-width: 1400px;
 }
 
@@ -55,10 +56,37 @@ input {
   width: 250px;
 }
 
+.header__nav-list {
+  list-style: none;
+  display: flex;
+  column-gap: 40px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.header__nav-item,
+.header__logout {
+  color: #fff;
+  transition: .3s ease;
+}
+.header__nav-item:hover,
+.header__logout:hover {
+  color: #ecca59;
+  text-decoration: none;
+}
+
+
 .section {
   margin-inline: auto;
   padding-block: 60px;
   width: 900px;
+}
+
+.section--center {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  min-height: calc(100dvh - 60px);
 }
 
 .page__title {

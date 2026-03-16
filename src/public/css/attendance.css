@@ -1,0 +1,64 @@
+.alert-success {
+  color: #00954f;
+  margin-bottom: 20px;
+}
+
+.alert-error {
+  color: #842029;
+  margin-bottom: 20px;
+}
+
+.status-label {
+  background-color: #C8C8C8;
+  border-radius: 100vmax;
+  color: #696969;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  padding: 8px 24px;
+}
+
+.attendance__date {
+  font-size: 40px;
+  font-weight: 400;
+  margin-bottom: 30px;
+}
+
+.attendance__time {
+  font-size: 80px;
+  font-weight: 700;
+}
+
+.stamps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 80px;
+  font-size: 26px;
+  font-weight: 700;
+  margin-top: 80px;
+}
+
+.stamps__button {
+  background-color: #000;
+  border: 4px solid #000;
+  border-radius: 20px;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 32px;
+  transition: .3s ease;
+  width: 220px;
+  height: 80px;
+}
+.stamps__button--rest {
+  background-color: #fff;
+  border-color: #fff;
+  color: #000;
+}
+
+.stamps__button:hover {
+  border-color: #ecca59;
+}

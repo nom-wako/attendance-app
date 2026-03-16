@@ -4,10 +4,10 @@
   </div>
   @auth
   <nav class="header__nav">
-    <ul>
-      <li><a href="/">勤怠</a></li>
-      <li><a href="/">勤怠一覧</a></li>
-      <li><a href="/">申請</a></li>
+    <ul class="header__nav-list">
+      <li><a href="/" class="header__nav-item">勤怠</a></li>
+      <li><a href="/" class="header__nav-item">勤怠一覧</a></li>
+      <li><a href="/" class="header__nav-item">申請</a></li>
       <li>
         <form action="/logout" method="post">
           @csrf
