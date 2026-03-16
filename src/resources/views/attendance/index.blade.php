@@ -45,12 +45,12 @@
         @csrf
         <button type="submit" class="stamps__button">退勤</button>
       </form>
-      <form action="" method="post">
+      <form action="{{ route('attendance.rest_in') }}" method="post">
         @csrf
         <button type="submit" class="stamps__button stamps__button--rest">休憩入</button>
       </form>
       @elseif ($status === 3)
-      <form action="" method="post">
+      <form action="{{ route('attendance.rest_out') }}" method="post">
         @csrf
         <button type="submit" class="stamps__button stamps__button--rest">休憩戻</button>
       </form>

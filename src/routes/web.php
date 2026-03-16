@@ -30,4 +30,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/attendance', [AttendanceController::class, 'index']);
     Route::post('/attendance/clock-in', [AttendanceController::class, 'clockIn'])->name('attendance.clock_in');
     Route::post('/attendance/clock-out', [AttendanceController::class, 'clockOut'])->name('attendance.clock_out');
+    Route::post('/attendance/rest-in', [AttendanceController::class, 'restIn'])->name('attendance.rest_in');
+    Route::post('/attendance/rest-out', [AttendanceController::class, 'restOut'])->name('attendance.rest_out');
 });
