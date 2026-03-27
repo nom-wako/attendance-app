@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\AttendanceCorrectionController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -33,6 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/attendance/rest-in', [AttendanceController::class, 'restIn'])->name('attendance.rest_in');
     Route::post('/attendance/rest-out', [AttendanceController::class, 'restOut'])->name('attendance.rest_out');
     Route::get('/attendance/list/{year?}/{month?}', [AttendanceController::class, 'list'])->name('attendance.list');
-    Route::get('/attendance/detail/{id}/', [AttendanceController::class, 'show'])->name('attendance.show');
-    Route::put('/attendance/detail/{id}/', [AttendanceController::class, 'update'])->name('attendance.update');
+    Route::get('/attendance/detail/{id}/', [AttendanceCorrectionController::class, 'show'])->name('attendance.show');
+    Route::put('/attendance/detail/{id}/', [AttendanceCorrectionController::class, 'update'])->name('attendance.update');
+    Route::get('/stamp_correction_request/list', [AttendanceCorrectionController::class, 'correctionList'])->name('stamp_correction_request.list');
 });

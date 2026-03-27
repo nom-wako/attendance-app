@@ -102,3 +102,24 @@ input {
   padding-left: 20px;
   text-align: left;
 }
+
+.tab-list {
+  list-style: none;
+  border-bottom: 1px solid #000;
+  display: flex;
+  margin-bottom: 40px;
+}
+
+.tab-list__item {
+  cursor: pointer;
+  font-size: 16px;
+  padding: 16px 50px;
+}
+
+.tab-list__item.is-active {
+  font-weight: 700;
+}
+
+.tab-content:not(.is-active) {
+  display: none;
+}

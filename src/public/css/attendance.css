@@ -115,6 +115,10 @@
   width: 100%;
 }
 
+.attendance-table--request th:nth-child(4) {
+  width: 200px;
+}
+
 .attendance-table thead {
   border-bottom: 3px solid #E1E1E1;
 }
