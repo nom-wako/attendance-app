@@ -69,7 +69,9 @@
             <td>{{ $clockOut }}</td>
             <td>{{ $restDisplay }}</td>
             <td>{{ $workDisplay }}</td>
-            <td><a href="#">詳細</a></td>
+            <td>
+              <a href="{{ route('attendance.show', ['id' => $attendance->id]) }}">詳細</a>
+            </td>
           </tr>
           @endforeach
         </tbody>

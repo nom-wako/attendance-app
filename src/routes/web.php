@@ -33,4 +33,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/attendance/rest-in', [AttendanceController::class, 'restIn'])->name('attendance.rest_in');
     Route::post('/attendance/rest-out', [AttendanceController::class, 'restOut'])->name('attendance.rest_out');
     Route::get('/attendance/list/{year?}/{month?}', [AttendanceController::class, 'list'])->name('attendance.list');
+    Route::get('/attendance/detail/{id}/', [AttendanceController::class, 'show'])->name('attendance.show');
+    Route::put('/attendance/detail/{id}/', [AttendanceController::class, 'update'])->name('attendance.update');
 });

@@ -10,6 +10,10 @@ class RestCorrection extends Model
     use HasFactory;
 
     protected $fillable = ['attendance_correction_id', 'rest_id', 'start_time', 'end_time'];
+    protected $casts = [
+        'start_time' => 'datetime',
+        'end_time' => 'datetime',
+    ];
 
     public function attendanceCorrection()
     {

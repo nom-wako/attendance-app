@@ -10,6 +10,10 @@ class AttendanceCorrection extends Model
     use HasFactory;
 
     protected $fillable = ['attendance_id', 'clock_in', 'clock_out', 'remarks', 'status'];
+    protected $casts = [
+        'clock_in' => 'datetime',
+        'clock_out' => 'datetime',
+    ];
 
     public function attendance()
     {
