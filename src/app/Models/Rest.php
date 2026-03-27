@@ -10,6 +10,10 @@ class Rest extends Model
     use HasFactory;
 
     protected $fillable = ['attendance_id', 'start_time', 'end_time'];
+    protected $casts = [
+        'start_time' => 'datetime',
+        'end_time' => 'datetime',
+    ];
 
     public function attendance()
     {

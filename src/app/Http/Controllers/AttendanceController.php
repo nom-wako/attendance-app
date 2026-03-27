@@ -140,4 +140,39 @@ class AttendanceController extends Controller
 
         return redirect()->back()->with('success', '休憩から戻りました。');
     }
+
+    public function list($year = null, $month = null)
+    {
+        $user = Auth::user();
+
+        if (!$year || !$month) {
+            $now = Carbon::now();
+            $year = $now->year;
+            $month = $now->month;
+        }
+
+        $currentMonth = Carbon::create($year, $month, 1);
+        $prevMonth = $currentMonth->copy()->subMonth();
+        $nextMonth = $currentMonth->copy()->addMonth();
+
+        $attendances = Attendance::with('rests')
+            ->where('user_id', $user->id)
+            ->whereYear('date', $year)
+            ->whereMonth('date', $month)
+            ->orderBy('date', 'asc')
+            ->get()
+            ->keyBy(function ($item) {
+                return $item->date->format('Y-m-d');
+            });
+
+        $daysInMonth = $currentMonth->daysInMonth;
+        $monthlyData = [];
+
+        for ($i = 1; $i <= $daysInMonth; $i++) {
+            $dateStr = Carbon::create($year, $month, $i)->format('Y-m-d');
+            $monthlyData[$dateStr] = $attendances->has($dateStr) ? $attendances->get($dateStr) : null;
+        }
+
+        return view('attendance.list', compact('monthlyData', 'currentMonth', 'prevMonth', 'nextMonth'));
+    }
 }
