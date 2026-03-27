@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AttendanceCorrectionRequest;
 use App\Models\Attendance;
 use App\Models\AttendanceCorrection;
 use App\Models\Rest;
@@ -197,7 +198,7 @@ class AttendanceController extends Controller
         return view('attendance.show', compact('attendance'));
     }
 
-    public function update(Request $request, $id)
+    public function update(AttendanceCorrectionRequest $request, $id)
     {
         $attendance = Attendance::findOrFail($id);
         if ($attendance->user_id !== Auth::id()) {

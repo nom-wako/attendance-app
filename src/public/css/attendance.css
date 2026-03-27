@@ -206,3 +206,10 @@
 .form__button:hover {
   border-color: #ecca59;
 }
+
+.form__error {
+  color: #ff0000;
+}
+.form__error:last-of-type {
+  margin-bottom: 10px;
+}

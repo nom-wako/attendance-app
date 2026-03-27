@@ -12,6 +12,11 @@
 <main>
   <section class="section">
     <h1 class="page__title page__title--left">勤怠詳細</h1>
+    @if ($errors->any())
+    @foreach (array_unique($errors->all()) as $error)
+    <p class="form__error">{{ $error }}</p>
+    @endforeach
+    @endif
     <form method="post" action="{{ route('attendance.update', $attendance->id) }}" class="form">
       @csrf
       @method('PUT')
