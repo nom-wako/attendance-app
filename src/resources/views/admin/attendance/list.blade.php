@@ -11,17 +11,17 @@
 @include('components.header')
 <main>
   <section class="section">
-    <h1 class="page__title page__title--left">勤怠一覧</h1>
+    <h1 class="page__title page__title--left">{{ $targetDate->format('Y年n月j日') }}の勤怠一覧</h1>
     <div class="attendance-nav">
-      <a href="{{ route('attendance.list', ['year' => $prevMonth->year, 'month' => $prevMonth->month]) }}" class="attendance-nav__prev"><span class="attendance-nav__arrow attendance-nav__arrow--prev"></span>前月</a>
-      <h2 class="attendance-nav__heading">{{ $currentMonth->format('Y/m') }}</h2>
-      <a href="{{ route('attendance.list', ['year' => $nextMonth->year, 'month' => $nextMonth->month]) }}" class="attendance-nav__next">翌月<span class="attendance-nav__arrow"></span></a>
+      <a href="{{ route('admin.attendance.list', $prevDate) }}" class="attendance-nav__prev"><span class="attendance-nav__arrow attendance-nav__arrow--prev"></span>前日</a>
+      <h2 class="attendance-nav__heading">{{ $targetDate->format('Y/m/d') }}</h2>
+      <a href="{{ route('admin.attendance.list', $nextDate) }}" class="attendance-nav__next">翌日<span class="attendance-nav__arrow"></span></a>
     </div>
     <div class="attendance-table">
       <table>
         <thead>
           <tr>
-            <th>日付</th>
+            <th>名前</th>
             <th>出勤</th>
             <th>退勤</th>
             <th>休憩</th>
@@ -30,13 +30,8 @@
           </tr>
         </thead>
         <tbody>
-          @foreach ($monthlyData as $dateStr => $attendance)
+          @foreach ($attendances as $attendance)
           @php
-          $dateObj = \Carbon\Carbon::parse($dateStr);
-          $days = ['日', '月', '火', '水', '木', '金', '土'];
-          $dayOfWeek = $days[$dateObj->dayOfWeek];
-          $dateDisplay = $dateObj->format('m/d') . '(' . $dayOfWeek . ')';
-
           $clockIn = '';
           $clockOut = '';
           $restDisplay = '';
@@ -62,15 +57,14 @@
           }
           }
           @endphp
-
           <tr>
-            <td>{{ $dateDisplay }}</td>
+            <td>{{ $attendance->user->name }}</td>
             <td>{{ $clockIn }}</td>
             <td>{{ $clockOut }}</td>
             <td>{{ $restDisplay }}</td>
             <td>{{ $workDisplay }}</td>
             <td>
-              <a href="{{ route('attendance.show', ['id' => $attendance->id]) }}">詳細</a>
+              <a href="#">詳細</a>
             </td>
           </tr>
           @endforeach

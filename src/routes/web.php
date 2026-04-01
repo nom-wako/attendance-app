@@ -38,3 +38,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/attendance/detail/{id}/', [AttendanceCorrectionController::class, 'update'])->name('attendance.update');
     Route::get('/stamp_correction_request/list', [AttendanceCorrectionController::class, 'correctionList'])->name('stamp_correction_request.list');
 });
+
+Route::get('/admin/attendance/list/{date?}', [AttendanceController::class, 'adminIndex'])
+    ->middleware('auth')
+    ->name('admin.attendance.list');

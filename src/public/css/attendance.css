@@ -63,7 +63,7 @@
   border-color: #ecca59;
 }
 
-.month-nav {
+.attendance-nav {
   background-color: #fff;
   border-radius: 10px;
   display: flex;
@@ -74,11 +74,11 @@
   height: 60px;
 }
 
-.month-nav__heading {
+.attendance-nav__heading {
   padding-left: 35px;
   position: relative;
 }
-.month-nav__heading::before {
+.attendance-nav__heading::before {
   content: '';
   background: url('/img/common/ico_calendar01.png') center/contain;
   display: inline-block;
@@ -89,21 +89,21 @@
   height: 25px;
 }
 
-.month-nav__prev,
-.month-nav__next {
+.attendance-nav__prev,
+.attendance-nav__next {
   color: #737373;
   font-size: 16px;
   font-weight: 700;
 }
 
-.month-nav__arrow {
+.attendance-nav__arrow {
   background: url('/img/common/ico_arrow01.png') center/contain;
   display: inline-block;
   margin-inline: 5px;
   width: 20px;
   height: 15px;
 }
-.month-nav__arrow--prev {
+.attendance-nav__arrow--prev {
   transform: rotate(180deg);
 }
 

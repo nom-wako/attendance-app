@@ -184,4 +184,17 @@ class AttendanceController extends Controller
 
         return view('attendance.list', compact('monthlyData', 'currentMonth', 'prevMonth', 'nextMonth'));
     }
+
+    public function adminIndex($date = null)
+    {
+        $targetDate = $date ? Carbon::parse($date) : Carbon::today();
+        $prevDate = $targetDate->copy()->subDay()->format('Y-m-d');
+        $nextDate = $targetDate->copy()->addDay()->format('Y-m-d');
+
+        $attendances = Attendance::with(['user', 'rests'])
+            ->whereDate('date', $targetDate->format('Y-m-d'))
+            ->get();
+
+        return view('admin.attendance.list', compact('attendances', 'targetDate', 'prevDate', 'nextDate'));
+    }
 }
