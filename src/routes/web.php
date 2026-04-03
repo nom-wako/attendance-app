@@ -29,6 +29,8 @@ Route::get('/admin/login', function () {
 });
 
 Route::middleware('auth')->group(function () {
+    Route::get('/stamp_correction_request/list', [AttendanceCorrectionController::class, 'correctionList'])->name('stamp_correction_request.list');
+
     Route::get('/attendance', [AttendanceController::class, 'index']);
     Route::post('/attendance/clock-in', [AttendanceController::class, 'clockIn'])->name('attendance.clock_in');
     Route::post('/attendance/clock-out', [AttendanceController::class, 'clockOut'])->name('attendance.clock_out');
@@ -37,12 +39,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/attendance/list/{year?}/{month?}', [AttendanceController::class, 'list'])->name('attendance.list');
     Route::get('/attendance/detail/{id}/', [AttendanceCorrectionController::class, 'show'])->name('attendance.show');
     Route::put('/attendance/detail/{id}/', [AttendanceCorrectionController::class, 'update'])->name('attendance.update');
-    Route::get('/stamp_correction_request/list', [AttendanceCorrectionController::class, 'correctionList'])->name('stamp_correction_request.list');
-});
 
-Route::get('/admin/attendance/list/{date?}', [AttendanceController::class, 'adminIndex'])
-    ->middleware('auth')
-    ->name('admin.attendance.list');
-Route::get('/admin/staff/list', [UserController::class, 'staffList'])
-    ->middleware('auth')
-    ->name('admin.staff.list');
+    Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
+        Route::get('/attendance/list/{date?}', [AttendanceController::class, 'adminIndex'])->name('attendance.list');
+        Route::get('/staff/list', [UserController::class, 'staffList'])->name('staff.list');
+    });
+});
