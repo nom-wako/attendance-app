@@ -104,7 +104,10 @@ class AttendanceCorrectionController extends Controller
     public function adminShow($id)
     {
         $attendance = Attendance::with(['user', 'rests'])->findOrFail($id);
-        return view('admin.attendance.detail', compact('attendance'));
+        $pendingCorrection = AttendanceCorrection::where('attendance_id', $attendance->id)
+            ->where('status', 1)
+            ->first();
+        return view('admin.attendance.detail', compact('attendance', 'pendingCorrection'));
     }
 
     public function adminUpdate(AdminAttendanceRequest $request, $id)

@@ -35,9 +35,6 @@
             <span class="form__right">{{ $attendance->date->format('m月d日') }}</span>
           </p>
         </div>
-        @php
-        $pendingCorrection = $attendance->attendanceCorrections()->where('status', 1)->first();
-        @endphp
         @if ($pendingCorrection)
         <div class="form__group">
           <p class="form__label">出勤・退勤</p>
