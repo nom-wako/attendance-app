@@ -21,7 +21,7 @@ class AttendanceController extends Controller
             ->first();
         $status = 1;
 
-        if ($attendance) {
+        if ($attendance && !is_null($attendance->clock_in)) {
             if ($attendance->clock_out) {
                 $status = 4;
             } else {
