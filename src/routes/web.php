@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AttendanceCorrectionController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -42,3 +43,6 @@ Route::middleware('auth')->group(function () {
 Route::get('/admin/attendance/list/{date?}', [AttendanceController::class, 'adminIndex'])
     ->middleware('auth')
     ->name('admin.attendance.list');
+Route::get('/admin/staff/list', [UserController::class, 'staffList'])
+    ->middleware('auth')
+    ->name('admin.staff.list');
