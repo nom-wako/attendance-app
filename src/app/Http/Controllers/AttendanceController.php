@@ -194,6 +194,7 @@ class AttendanceController extends Controller
 
         $attendances = Attendance::with(['user', 'rests'])
             ->whereDate('date', $targetDate->format('Y-m-d'))
+            ->whereNotNull('clock_in')
             ->get();
 
         return view('admin.attendance.list', compact('attendances', 'targetDate', 'prevDate', 'nextDate'));

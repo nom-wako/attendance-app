@@ -30,7 +30,7 @@
           </tr>
         </thead>
         <tbody>
-          @foreach ($attendances as $attendance)
+          @forelse ($attendances as $attendance)
           @php
           $clockIn = '';
           $clockOut = '';
@@ -67,7 +67,11 @@
               <a href="{{ url('admin/attendance/' . $attendance->id) }}">詳細</a>
             </td>
           </tr>
-          @endforeach
+          @empty
+          <tr>
+            <td colspan="6">本日の勤怠データはありません</td>
+          </tr>
+          @endforelse
         </tbody>
       </table>
     </div>
