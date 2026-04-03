@@ -64,7 +64,7 @@
             <td>{{ $restDisplay }}</td>
             <td>{{ $workDisplay }}</td>
             <td>
-              <a href="#">詳細</a>
+              <a href="{{ url('admin/attendance/' . $attendance->id) }}">詳細</a>
             </td>
           </tr>
           @endforeach

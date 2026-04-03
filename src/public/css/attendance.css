@@ -211,6 +211,13 @@
   border-color: #ecca59;
 }
 
+.form__status {
+  color: #00954f;
+}
+.form__status:last-of-type {
+  margin-bottom: 10px;
+}
+
 .form__error {
   color: #ff0000;
 }

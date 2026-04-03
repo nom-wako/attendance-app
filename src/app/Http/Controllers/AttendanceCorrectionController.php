@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AdminAttendanceRequest;
 use App\Http\Requests\AttendanceCorrectionRequest;
 use App\Models\Attendance;
 use App\Models\AttendanceCorrection;
+use App\Models\Rest;
 use App\Models\RestCorrection;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -96,5 +99,45 @@ class AttendanceCorrectionController extends Controller
         $approvedCorrections = $corrections->whereIn('status', [2, 3]);
 
         return view('stamp_correction_request.list', compact('pendingCorrections', 'approvedCorrections'));
+    }
+
+    public function adminShow($id)
+    {
+        $attendance = Attendance::with(['user', 'rests'])->findOrFail($id);
+        return view('admin.attendance.detail', compact('attendance'));
+    }
+
+    public function adminUpdate(AdminAttendanceRequest $request, $id)
+    {
+        $attendance = Attendance::findOrFail($id);
+        $attendance->update([
+            'clock_in' => $request->clock_in,
+            'clock_out' => $request->clock_out,
+        ]);
+
+        if ($request->has('rests')) {
+            foreach ($request->rests as $restData) {
+                if (isset($restData['id'])) {
+                    $rest = Rest::findOrFail($restData['id']);
+                    $rest->update([
+                        'start_time' => $restData['start_time'],
+                        'end_time' => $restData['end_time'],
+                    ]);
+                }
+            }
+        }
+
+        if ($request->has('new_rest')) {
+            $newRestData = $request->new_rest;
+            if (!empty($newRestData['start_time']) || !empty($newRestData['end_time'])) {
+                Rest::create([
+                    'attendance_id' => $attendance->id,
+                    'start_time' => $newRestData['start_time'],
+                    'end_time' => $newRestData['end_time'],
+                ]);
+            }
+        }
+
+        return back()->with('status', '勤怠データを修正しました。');
     }
 }
