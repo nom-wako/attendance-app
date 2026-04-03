@@ -30,6 +30,12 @@ Route::get('/admin/login', function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/stamp_correction_request/list', [AttendanceCorrectionController::class, 'correctionList'])->name('stamp_correction_request.list');
+    Route::get('/stamp_correction_request/approve/{attendance_correct_request_id}', [AttendanceCorrectionController::class, 'showApprove'])
+        ->middleware(['auth', 'admin'])
+        ->name('stamp_correction_request.approve');
+    Route::post('/stamp_correction_request/approve/{attendance_correct_request_id}', [AttendanceCorrectionController::class, 'processApprove'])
+        ->middleware(['auth', 'admin'])
+        ->name('stamp_correction_request.process');
 
     Route::get('/attendance', [AttendanceController::class, 'index']);
     Route::post('/attendance/clock-in', [AttendanceController::class, 'clockIn'])->name('attendance.clock_in');

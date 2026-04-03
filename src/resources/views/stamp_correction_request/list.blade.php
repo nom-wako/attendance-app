@@ -38,7 +38,7 @@
             <td>{{ $correction->created_at->format('Y/m/d') }}</td>
             <td>
               @if (Auth::user()->role === 1)
-              <a href="#">詳細</a>
+              <a href="{{ route('stamp_correction_request.approve', $correction->id) }}">詳細</a>
               @else
               <a href="{{ route('attendance.show', $correction->attendance->id) }}">詳細</a>
               @endif
@@ -70,7 +70,7 @@
             <td>{{ $correction->created_at->format('Y/m/d') }}</td>
             <td>
               @if (Auth::user()->role === 1)
-              <a href="#">詳細</a>
+              <a href="{{ route('stamp_correction_request.approve', $correction->id) }}">詳細</a>
               @else
               <a href="{{ route('attendance.show', $correction->attendance->id) }}">詳細</a>
               @endif

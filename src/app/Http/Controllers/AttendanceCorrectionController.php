@@ -96,9 +96,48 @@ class AttendanceCorrectionController extends Controller
 
         $corrections = $query->orderBy('created_at', 'desc')->get();
         $pendingCorrections = $corrections->where('status', 1);
-        $approvedCorrections = $corrections->whereIn('status', [2, 3]);
+        $approvedCorrections = $corrections->whereIn('status', 2);
 
         return view('stamp_correction_request.list', compact('pendingCorrections', 'approvedCorrections'));
+    }
+
+    public function showApprove($attendance_correct_request_id)
+    {
+        $correction = AttendanceCorrection::with(['attendance.user'])->findOrFail($attendance_correct_request_id);
+        return view('stamp_correction_request.approve', compact('correction'));
+    }
+
+    public function processApprove(Request $request, $attendance_correct_request_id)
+    {
+        $correction = AttendanceCorrection::findOrFail($attendance_correct_request_id);
+        $attendance = $correction->attendance;
+        $attendance->update([
+            'clock_in' => $correction->clock_in,
+            'clock_out' => $correction->clock_out,
+        ]);
+
+        foreach ($correction->restCorrections as $restCorrection) {
+            if ($restCorrection->rest_id) {
+                $rest = Rest::find($restCorrection->rest_id);
+                if ($rest) {
+                    $rest->update([
+                        'start_time' => $restCorrection->start_time,
+                        'end_time' => $restCorrection->end_time,
+                    ]);
+                }
+            } else {
+                Rest::create([
+                    'attendance_id' => $attendance->id,
+                    'start_time' => $restCorrection->start_time,
+                    'end_time' => $restCorrection->end_time,
+                ]);
+            }
+        }
+
+        $correction->update([
+            'status' => 2,
+        ]);
+        return back()->with('status', '修正申請を承認し、勤怠に反映しました。');
     }
 
     public function adminShow($id)
