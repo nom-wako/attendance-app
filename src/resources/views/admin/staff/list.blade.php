@@ -27,7 +27,7 @@
             <td>{{ $staff->name }}</td>
             <td>{{ $staff->email }}</td>
             <td>
-              <a href="#">詳細</a>
+              <a href="{{ url('admin/attendance/staff/' . $staff->id) }}">詳細</a>
             </td>
           </tr>
           @endforeach

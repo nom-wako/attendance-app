@@ -43,5 +43,6 @@ Route::middleware('auth')->group(function () {
     Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
         Route::get('/attendance/list/{date?}', [AttendanceController::class, 'adminIndex'])->name('attendance.list');
         Route::get('/staff/list', [UserController::class, 'staffList'])->name('staff.list');
+        Route::get('/attendance/staff/{id}/{year?}/{month?}', [AttendanceController::class, 'staffAttendanceList'])->name('attendance.staff');
     });
 });

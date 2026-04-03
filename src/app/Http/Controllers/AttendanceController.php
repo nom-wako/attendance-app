@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Attendance;
 use App\Models\Rest;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -196,5 +197,38 @@ class AttendanceController extends Controller
             ->get();
 
         return view('admin.attendance.list', compact('attendances', 'targetDate', 'prevDate', 'nextDate'));
+    }
+
+    public function staffAttendanceList($id, $year = null, $month = null)
+    {
+        $staff = User::findOrFail($id);
+        $year = $year ?? Carbon::now()->year;
+        $month = $month ?? Carbon::now()->month;
+        $targetMonth = Carbon::create($year, $month, 1);
+        $prevMonth = $targetMonth->copy()->subMonth();
+        $nextMonth = $targetMonth->copy()->addMonth();
+        $daysInMonth = $targetMonth->daysInMonth;
+        $attendances = Attendance::where('user_id', $staff->id)
+            ->whereYear('date', $year)
+            ->whereMonth('date', $month)
+            ->get()
+            ->keyBy(function ($item) {
+                return Carbon::parse($item->date)->format('Y-m-d');
+            });
+        $monthlyData = [];
+
+        for ($i = 1; $i <= $daysInMonth; $i++) {
+            $dateStr = Carbon::create($year, $month, $i)->format('Y-m-d');
+            if ($attendances->has($dateStr)) {
+                $monthlyData[$dateStr] = $attendances->get($dateStr);
+            } else {
+                $newAttendance = Attendance::create([
+                    'user_id' => $staff->id,
+                    'date' => $dateStr,
+                ]);
+                $monthlyData[$dateStr] = $newAttendance;
+            }
+        }
+        return view('admin.attendance.staff', compact('staff', 'monthlyData', 'targetMonth', 'prevMonth', 'nextMonth'));
     }
 }
