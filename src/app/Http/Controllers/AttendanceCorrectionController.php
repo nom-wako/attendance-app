@@ -11,6 +11,7 @@ use App\Models\RestCorrection;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AttendanceCorrectionController extends Controller
 {
@@ -111,33 +112,40 @@ class AttendanceCorrectionController extends Controller
     {
         $correction = AttendanceCorrection::findOrFail($attendance_correct_request_id);
         $attendance = $correction->attendance;
-        $attendance->update([
-            'clock_in' => $correction->clock_in,
-            'clock_out' => $correction->clock_out,
-        ]);
 
-        foreach ($correction->restCorrections as $restCorrection) {
-            if ($restCorrection->rest_id) {
-                $rest = Rest::find($restCorrection->rest_id);
-                if ($rest) {
-                    $rest->update([
-                        'start_time' => $restCorrection->start_time,
-                        'end_time' => $restCorrection->end_time,
-                    ]);
-                }
-            } else {
-                Rest::create([
-                    'attendance_id' => $attendance->id,
-                    'start_time' => $restCorrection->start_time,
-                    'end_time' => $restCorrection->end_time,
+        try {
+            DB::transaction(function () use ($correction, $attendance) {
+                $attendance->update([
+                    'clock_in' => $correction->clock_in,
+                    'clock_out' => $correction->clock_out,
                 ]);
-            }
-        }
 
-        $correction->update([
-            'status' => 2,
-        ]);
-        return back()->with('status', '修正申請を承認し、勤怠に反映しました。');
+                foreach ($correction->restCorrections as $restCorrection) {
+                    if ($restCorrection->rest_id) {
+                        $rest = Rest::find($restCorrection->rest_id);
+                        if ($rest) {
+                            $rest->update([
+                                'start_time' => $restCorrection->start_time,
+                                'end_time' => $restCorrection->end_time,
+                            ]);
+                        }
+                    } else {
+                        Rest::create([
+                            'attendance_id' => $attendance->id,
+                            'start_time' => $restCorrection->start_time,
+                            'end_time' => $restCorrection->end_time,
+                        ]);
+                    }
+                }
+
+                $correction->update([
+                    'status' => 2,
+                ]);
+            });
+            return back()->with('status', '修正申請を承認し、勤怠に反映しました。');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => '承認処理中にエラーが発生しました。']);
+        }
     }
 
     public function adminShow($id)
