@@ -43,22 +43,29 @@ class AttendanceController extends Controller
     {
         $user = Auth::user();
         $today = Carbon::today();
+        $now = Carbon::now();
 
-        $existingAttendance = Attendance::where('user_id', $user->id)
+        $attendance = Attendance::where('user_id', $user->id)
             ->whereDate('date', $today)
             ->first();
 
-        if ($existingAttendance) {
-            return redirect()->back()->with('error', 'すでに本日の出勤打刻が完了しています。');
+        if ($attendance) {
+            if (is_null($attendance->clock_in)) {
+                $attendance->update([
+                    'clock_in' => $now,
+                ]);
+                return back()->with('success', '出勤打刻が完了しました。');
+            }
+            return back()->with('error', 'すでに本日の出勤打刻が完了しています。');
         }
 
         Attendance::create([
             'user_id' => $user->id,
             'date' => $today,
-            'clock_in' => Carbon::now(),
+            'clock_in' => $now,
         ]);
 
-        return redirect()->back()->with('success', '出勤打刻が完了しました。');
+        return back()->with('success', '出勤打刻が完了しました。');
     }
 
     public function clockOut()

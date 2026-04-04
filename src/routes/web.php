@@ -28,7 +28,7 @@ Route::get('/admin/login', function () {
     return view('admin.login');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/stamp_correction_request/list', [AttendanceCorrectionController::class, 'correctionList'])->name('stamp_correction_request.list');
     Route::get('/stamp_correction_request/approve/{attendance_correct_request_id}', [AttendanceCorrectionController::class, 'showApprove'])
         ->middleware(['auth', 'admin'])

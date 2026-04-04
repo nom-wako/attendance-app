@@ -47,3 +47,41 @@ body {
   color: #ff333f;
   margin-top: 5px;
 }
+
+.verify-email__text {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 60px;
+  text-align: center;
+}
+
+.verify-email__button {
+  background-color: #D9D9D9;
+  border: 1px solid #000;
+  border-radius: 5px;
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+  font-weight: 700;
+  margin-inline: auto;
+  transition: .3s ease;
+  width: 257px;
+  height: 69px;
+}
+.verify-email__button:hover {
+  background-color: #ecca59;
+  text-decoration: none;
+}
+
+.verify-email__resend {
+  color: #0073CC;
+  font-size: 20px;
+  display: block;
+  margin: 50px auto auto;
+  padding: 16px 8px;
+  transition: .3s ease;
+  width: 257px;
+}
+.verify-email__resend:hover {
+  opacity: 0.7;
+}
