@@ -30,7 +30,7 @@
         <p class="form__grid">
           <span class="form__left">{{ $correction->attendance->date->format('Y年') }}</span>
           <span class="form__center"></span>
-          <span class="form__right">{{ $correction->attendance->date->format('m月d日') }}</span>
+          <span class="form__right">{{ $correction->attendance->date->format('n月j日') }}</span>
         </p>
       </div>
       <div class="form__group">
