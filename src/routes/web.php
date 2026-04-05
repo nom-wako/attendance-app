@@ -52,5 +52,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/attendance/staff/{id}/{year?}/{month?}', [AttendanceController::class, 'staffAttendanceList'])->name('attendance.staff');
         Route::get('/attendance/{id}', [AttendanceCorrectionController::class, 'adminShow'])->name('attendance.detail');
         Route::post('/attendance/{id}', [AttendanceCorrectionController::class, 'adminUpdate'])->name('attendance.update');
+        Route::get('/attendance/{user_id}/export/{month}', [AttendanceController::class, 'exportCsv'])->name('attendance.export');
     });
 });

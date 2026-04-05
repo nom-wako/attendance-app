@@ -8,6 +8,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AttendanceController extends Controller
 {
@@ -238,5 +239,52 @@ class AttendanceController extends Controller
             }
         }
         return view('admin.attendance.staff', compact('staff', 'monthlyData', 'targetMonth', 'prevMonth', 'nextMonth'));
+    }
+
+    public function exportCsv($user_id, $month)
+    {
+        $user = User::findOrFail($user_id);
+        $attendances = Attendance::with('rests')
+            ->where('user_id', $user_id)
+            ->where('date', 'like', $month . '%')
+            ->orderBy('date', 'asc')
+            ->get();
+
+        $fileName = "勤怠一覧_{$user->name}_{$month}.csv";
+
+        return response()->streamDownload(function () use ($attendances) {
+            $stream = fopen('php://output', 'w');
+            fwrite($stream, "\xEF\xBB\xBF");
+            fputcsv($stream, ['日付', '出勤時間', '退勤時間', '休憩時間', '勤務時間']);
+            foreach ($attendances as $attendance) {
+                $totalRestMinutes = 0;
+                foreach ($attendance->rests as $rest) {
+                    if ($rest->start_time && $rest->end_time) {
+                        $start = Carbon::parse($rest->start_time);
+                        $end = Carbon::parse($rest->end_time);
+                        $totalRestMinutes += $start->diffInMinutes($end);
+                    }
+                }
+                $restTimeFormatted = sprintf('%02d:%02d', floor($totalRestMinutes / 60), $totalRestMinutes % 60);
+
+                $workTimeFormatted = '';
+                if ($attendance->clock_in && $attendance->clock_out) {
+                    $clockIn = Carbon::parse($attendance->clock_in);
+                    $clockOut = Carbon::parse($attendance->clock_out);
+                    $grossWorkMinutes = $clockIn->diffInMinutes($clockOut);
+                    $netWorkMinutes = max(0, $grossWorkMinutes - $totalRestMinutes);
+                    $workTimeFormatted = sprintf('%02d:%02d', floor($netWorkMinutes / 60), $netWorkMinutes % 60);
+                }
+
+                fputcsv($stream, [
+                    $attendance->date->format('Y-m-d'),
+                    $attendance->clock_in ? Carbon::parse($attendance->clock_in)->format('H:i') : '',
+                    $attendance->clock_out ? Carbon::parse($attendance->clock_out)->format('H:i') : '',
+                    $restTimeFormatted,
+                    $workTimeFormatted,
+                ]);
+            }
+            fclose($stream);
+        }, $fileName);
     }
 }

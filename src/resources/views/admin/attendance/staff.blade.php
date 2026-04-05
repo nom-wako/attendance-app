@@ -76,7 +76,7 @@
         </tbody>
       </table>
     </div>
-    <button class="csv-button">CSV出力</button>
+    <a href="{{ route('admin.attendance.export', ['user_id' => $staff->id, 'month' => $targetMonth->format('Y-m')]) }}" class="csv-button">CSV出力</a>
   </section>
 </main>
 

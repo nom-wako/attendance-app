@@ -247,4 +247,5 @@
 
 .csv-button:hover {
   border-color: #ecca59;
+  text-decoration: none;
 }
