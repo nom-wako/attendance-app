@@ -85,10 +85,6 @@
             <input type="time" name="new_rest[end_time]" value="{{ old('new_rest.end_time') }}">
           </p>
         </div>
-        <div class="form__group">
-          <p class="form__label">備考</p>
-          <textarea name="remarks" class="form__textarea"></textarea>
-        </div>
         @endif
       </div>
       @if ($pendingCorrection)
