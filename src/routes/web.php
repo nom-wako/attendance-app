@@ -29,22 +29,25 @@ Route::get('/admin/login', function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/stamp_correction_request/list', [AttendanceCorrectionController::class, 'correctionList'])->name('stamp_correction_request.list');
-    Route::get('/stamp_correction_request/approve/{attendance_correct_request_id}', [AttendanceCorrectionController::class, 'showApprove'])
-        ->middleware(['auth', 'admin'])
-        ->name('stamp_correction_request.approve');
-    Route::post('/stamp_correction_request/approve/{attendance_correct_request_id}', [AttendanceCorrectionController::class, 'processApprove'])
-        ->middleware(['auth', 'admin'])
-        ->name('stamp_correction_request.process');
 
-    Route::get('/attendance', [AttendanceController::class, 'index']);
-    Route::post('/attendance/clock-in', [AttendanceController::class, 'clockIn'])->name('attendance.clock_in');
-    Route::post('/attendance/clock-out', [AttendanceController::class, 'clockOut'])->name('attendance.clock_out');
-    Route::post('/attendance/rest-in', [AttendanceController::class, 'restIn'])->name('attendance.rest_in');
-    Route::post('/attendance/rest-out', [AttendanceController::class, 'restOut'])->name('attendance.rest_out');
-    Route::get('/attendance/list/{year?}/{month?}', [AttendanceController::class, 'list'])->name('attendance.list');
-    Route::get('/attendance/detail/{id}/', [AttendanceCorrectionController::class, 'show'])->name('attendance.show');
-    Route::put('/attendance/detail/{id}/', [AttendanceCorrectionController::class, 'update'])->name('attendance.update');
+    Route::prefix('stamp_correction_request')->name('stamp_correction_request.')->group(function () {
+        Route::get('/list', [AttendanceCorrectionController::class, 'correctionList'])->name('list');
+        Route::middleware('admin')->group(function () {
+            Route::get('/approve/{attendance_correct_request_id}', [AttendanceCorrectionController::class, 'showApprove'])->name('approve');
+            Route::post('/approve/{attendance_correct_request_id}', [AttendanceCorrectionController::class, 'processApprove'])->name('process');
+        });
+    });
+
+    Route::prefix('attendance')->name('attendance.')->group(function () {
+        Route::get('/', [AttendanceController::class, 'index']);
+        Route::post('/clock-in', [AttendanceController::class, 'clockIn'])->name('clock_in');
+        Route::post('/clock-out', [AttendanceController::class, 'clockOut'])->name('clock_out');
+        Route::post('/rest-in', [AttendanceController::class, 'restIn'])->name('rest_in');
+        Route::post('/rest-out', [AttendanceController::class, 'restOut'])->name('rest_out');
+        Route::get('/list/{year?}/{month?}', [AttendanceController::class, 'list'])->name('list');
+        Route::get('/detail/{id}', [AttendanceCorrectionController::class, 'show'])->name('show');
+        Route::put('/detail/{id}', [AttendanceCorrectionController::class, 'update'])->name('update');
+    });
 
     Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
         Route::get('/attendance/list/{date?}', [AttendanceController::class, 'adminIndex'])->name('attendance.list');
