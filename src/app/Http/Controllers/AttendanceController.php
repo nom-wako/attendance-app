@@ -6,20 +6,13 @@ use App\Models\Attendance;
 use App\Models\Rest;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AttendanceController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
-        $today = Carbon::today();
-
-        $attendance = Attendance::where('user_id', $user->id)
-            ->whereDate('date', $today)
-            ->first();
+        $attendance = $this->getTodayAttendance();
         $status = 1;
 
         if ($attendance && !is_null($attendance->clock_in)) {
@@ -29,11 +22,7 @@ class AttendanceController extends Controller
                 $activeRest = Rest::where('attendance_id', $attendance->id)
                     ->whereNull('end_time')
                     ->first();
-                if ($activeRest) {
-                    $status = 3;
-                } else {
-                    $status = 2;
-                }
+                $status = $activeRest ? 3 : 2;
             }
         }
 
@@ -42,18 +31,12 @@ class AttendanceController extends Controller
 
     public function clockIn()
     {
-        $user = Auth::user();
-        $today = Carbon::today();
-        $now = Carbon::now();
-
-        $attendance = Attendance::where('user_id', $user->id)
-            ->whereDate('date', $today)
-            ->first();
+        $attendance = $this->getTodayAttendance();
 
         if ($attendance) {
             if (is_null($attendance->clock_in)) {
                 $attendance->update([
-                    'clock_in' => $now,
+                    'clock_in' => Carbon::now(),
                 ]);
                 return back()->with('success', '出勤打刻が完了しました。');
             }
@@ -61,9 +44,9 @@ class AttendanceController extends Controller
         }
 
         Attendance::create([
-            'user_id' => $user->id,
-            'date' => $today,
-            'clock_in' => $now,
+            'user_id' => Auth::id(),
+            'date' => Carbon::today(),
+            'clock_in' => Carbon::now(),
         ]);
 
         return back()->with('success', '出勤打刻が完了しました。');
@@ -71,12 +54,7 @@ class AttendanceController extends Controller
 
     public function clockOut()
     {
-        $user = Auth::user();
-        $today = Carbon::today();
-
-        $attendance = Attendance::where('user_id', $user->id)
-            ->whereDate('date', $today)
-            ->first();
+        $attendance = $this->getTodayAttendance();
 
         if (!$attendance) {
             return redirect()->back()->with('error', '出勤打刻がされていません。');
@@ -95,12 +73,7 @@ class AttendanceController extends Controller
 
     public function restIn()
     {
-        $user = Auth::user();
-        $today = Carbon::today();
-
-        $attendance = Attendance::where('user_id', $user->id)
-            ->whereDate('date', $today)
-            ->first();
+        $attendance = $this->getTodayAttendance();
 
         if (!$attendance || $attendance->clock_out) {
             return redirect()->back()->with('error', '休憩打刻ができない状態です。');
@@ -124,12 +97,7 @@ class AttendanceController extends Controller
 
     public function restOut()
     {
-        $user = Auth::user();
-        $today = Carbon::today();
-
-        $attendance = Attendance::where('user_id', $user->id)
-            ->whereDate('date', $today)
-            ->first();
+        $attendance = $this->getTodayAttendance();
 
         if (!$attendance || $attendance->clock_out) {
             return redirect()->back()->with('error', '休憩打刻ができない状態です。');
@@ -217,13 +185,15 @@ class AttendanceController extends Controller
         $prevMonth = $targetMonth->copy()->subMonth();
         $nextMonth = $targetMonth->copy()->addMonth();
         $daysInMonth = $targetMonth->daysInMonth;
-        $attendances = Attendance::where('user_id', $staff->id)
+        $attendances = Attendance::with('rests')
+            ->where('user_id', $staff->id)
             ->whereYear('date', $year)
             ->whereMonth('date', $month)
             ->get()
             ->keyBy(function ($item) {
                 return Carbon::parse($item->date)->format('Y-m-d');
             });
+
         $monthlyData = [];
 
         for ($i = 1; $i <= $daysInMonth; $i++) {
@@ -286,5 +256,12 @@ class AttendanceController extends Controller
             }
             fclose($stream);
         }, $fileName);
+    }
+
+    private function getTodayAttendance()
+    {
+        return Attendance::where('user_id', Auth::id())
+            ->whereDate('date', Carbon::today())
+            ->first();
     }
 }
