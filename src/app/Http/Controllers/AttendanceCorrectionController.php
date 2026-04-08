@@ -161,20 +161,41 @@ class AttendanceCorrectionController extends Controller
     public function adminUpdate(AdminAttendanceRequest $request, $id)
     {
         $attendance = Attendance::findOrFail($id);
+        $dataStr = $attendance->date->format('Y-m-d');
 
-        DB::transaction(function () use ($request, $attendance) {
+        DB::transaction(function () use ($request, $attendance, $dataStr) {
+            $correction = new AttendanceCorrection();
+            $correction->attendance_id = $attendance->id;
+
+            $correction->clock_in = $request->clock_in ? $dataStr . ' ' . $request->clock_in . ':00' : null;
+            $correction->clock_out = $request->clock_out ? $dataStr . ' ' . $request->clock_out . ':00' : null;
+            $correction->remarks = $request->remarks;
+            $correction->status = 2;
+            $correction->save();
+
             $attendance->update([
-                'clock_in' => $request->clock_in,
-                'clock_out' => $request->clock_out,
+                'clock_in' => $correction->clock_in,
+                'clock_out' => $correction->clock_out,
             ]);
 
             if ($request->has('rests')) {
                 foreach ($request->rests as $restData) {
                     if (isset($restData['id'])) {
                         $rest = Rest::findOrFail($restData['id']);
+
+                        $startTime = $restData['start_time'] ? $dataStr . ' ' . $restData['start_time'] . ':00' : null;
+                        $endTime = $restData['end_time'] ? $dataStr . ' ' . $restData['end_time'] . ':00' : null;
+
+                        $restCorrection = new RestCorrection();
+                        $restCorrection->attendance_correction_id = $correction->id;
+                        $restCorrection->rest_id = $rest->id;
+                        $restCorrection->start_time = $startTime;
+                        $restCorrection->end_time = $endTime;
+                        $restCorrection->save();
+
                         $rest->update([
-                            'start_time' => $restData['start_time'],
-                            'end_time' => $restData['end_time'],
+                            'start_time' => $startTime,
+                            'end_time' => $endTime,
                         ]);
                     }
                 }
@@ -183,15 +204,26 @@ class AttendanceCorrectionController extends Controller
             if ($request->has('new_rest')) {
                 $newRestData = $request->new_rest;
                 if (!empty($newRestData['start_time']) || !empty($newRestData['end_time'])) {
-                    Rest::create([
+
+                    $startTime = !empty($newRestData['start_time']) ? $dataStr . ' ' . $newRestData['start_time'] . ':00' : null;
+                    $endTime = !empty($newRestData['end_time']) ? $dataStr . ' ' . $newRestData['end_time'] . ':00' : null;
+
+                    $newRest = Rest::create([
                         'attendance_id' => $attendance->id,
-                        'start_time' => $newRestData['start_time'],
-                        'end_time' => $newRestData['end_time'],
+                        'start_time' => $startTime,
+                        'end_time' => $endTime,
                     ]);
+
+                    $newRestCorrection = new RestCorrection();
+                    $newRestCorrection->attendance_correction_id = $correction->id;
+                    $newRestCorrection->rest_id = $newRest->id;
+                    $newRestCorrection->start_time = $startTime;
+                    $newRestCorrection->end_time = $endTime;
+                    $newRestCorrection->save();
                 }
             }
         });
 
-        return back()->with('status', '勤怠データを修正しました。');
+        return back()->with('status', '勤怠データを修正し、変更履歴を記録しました。');
     }
 }
