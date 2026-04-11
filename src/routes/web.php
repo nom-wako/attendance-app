@@ -3,6 +3,7 @@
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AttendanceCorrectionController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Admin\LoginController as AdminLoginController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +28,8 @@ Route::get('/', function () {
 Route::get('/admin/login', function () {
     return view('admin.login');
 });
+
+Route::post('/admin/login', [AdminLoginController::class, 'store'])->name('admin.login.store');
 
 Route::middleware(['auth', 'verified'])->group(function () {
 

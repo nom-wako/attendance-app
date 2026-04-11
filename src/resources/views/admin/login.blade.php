@@ -12,7 +12,7 @@
 <main>
   <section class="section">
     <h1 class="page__title">管理者ログイン</h1>
-    <form action="/login" method="post" class="form">
+    <form action="{{ route('admin.login.store') }}" method="post" class="form">
       @csrf
       <div class="form__group">
         <label for="email" class="form__label">メールアドレス</label>
