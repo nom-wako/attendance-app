@@ -32,8 +32,15 @@
       <p>退勤済</p>
       @endif
     </div>
-    <h1 id="current-date" class="attendance__date"></h1>
-    <p id="current-time" class="attendance__time"></p>
+    @php
+    $now = \Carbon\Carbon::now();
+    $week = ['日', '月', '火', '水', '木', '金', '土'];
+    $dateStr = $now->format('Y年n月j日') . '(' . $week[$now->dayOfWeek] . ')';
+    $timeStr = $now->format('H:i');
+    $timestamp = $now->timestamp * 1000;
+    @endphp
+    <h1 id="current-date" class="attendance__date">{{ $dateStr }}</h1>
+    <p id="current-time" class="attendance__time" data-timestamp="{{ $timestamp }}">{{ $timeStr }}</p>
     <div class="stamps">
       @if ($status === 1)
       <form action="{{ route('attendance.clock_in') }}" method="post">

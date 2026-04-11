@@ -1,5 +1,8 @@
+const timeElement = document.getElementById('current-time');
+let serverTime = parseInt(timeElement.dataset.timestamp, 10);
+
 function updateTime() {
-  const now = new Date();
+  const now = new Date(serverTime);
 
   const year = now.getFullYear();
   const month = now.getMonth() + 1;
@@ -14,8 +17,8 @@ function updateTime() {
 
   document.getElementById('current-date').innerText = dateString;
   document.getElementById('current-time').innerText = timeString;
-}
 
-updateTime();
+  serverTime += 1000;
+}
 
 setInterval(updateTime, 1000);
